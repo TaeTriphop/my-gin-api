@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+
 	r := gin.Default()
 	config.ConnectDB()
 	controllers.InitUserCollection(config.DB)
