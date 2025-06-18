@@ -16,5 +16,5 @@ func main() {
 
 	routes.UserRoutes(r)
 
-	r.Run(":3000") // default port 8080
+	r.Run(":8080") // default port 8080
 }
