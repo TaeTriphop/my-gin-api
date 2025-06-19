@@ -13,3 +13,7 @@ func UserRoutes(r *gin.Engine) {
 	r.PUT("/users/:id", controllers.UpdateUser)
 	r.DELETE("/users/:id", controllers.DeleteUser)
 }
+
+func RemindersRoutes(r *gin.Engine) {
+	r.GET("/reminders", controllers.GetReminders)
+}

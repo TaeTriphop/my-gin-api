@@ -13,8 +13,10 @@ func main() {
 	r := gin.Default()
 	config.ConnectDB()
 	controllers.InitUserCollection(config.DB)
+	controllers.InitRemindersCollection(config.DB)
 
 	routes.UserRoutes(r)
+	routes.RemindersRoutes(r)
 
 	r.Run(":3000") // default port 8080
 }
