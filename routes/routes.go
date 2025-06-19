@@ -16,4 +16,9 @@ func UserRoutes(r *gin.Engine) {
 
 func RemindersRoutes(r *gin.Engine) {
 	r.GET("/reminders", controllers.GetReminders)
+	r.POST("/reminders", controllers.CreateReminders)
+	r.GET("/reminders/:id", controllers.GetReminder)
+	r.PUT("/reminders/:id", controllers.UpdateReminders)
+	r.DELETE("/reminders/:id", controllers.DeleteReminder)
+
 }

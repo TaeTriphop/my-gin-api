@@ -1,6 +1,9 @@
 package models
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 
 type Reminders struct {
+	ID    primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	Title      string `json:"title" bson:"title"`           // หัวข้อแจ้งเตือน
 	Message    string `json:"message" bson:"message"`       // ข้อความแจ้งเตือน
 	Minute     int    `json:"minute" bson:"minute"`         // นาที (0-59)
