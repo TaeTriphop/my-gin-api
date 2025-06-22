@@ -15,7 +15,7 @@ var DB *mongo.Database
 func ConnectDB() {
 	uri := os.Getenv("MONGO_URI")
 	if uri == "" {
-		uri = "mongodb://119.59.103.95:27017" // default
+		uri = "mongodb://127.0.0.1:27017" // default
 	}
 
 	clientOptions := options.Client().ApplyURI(uri)
