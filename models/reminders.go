@@ -11,4 +11,5 @@ type Reminders struct {
 	DayOfMonth []int  `json:"dayOfMonth" bson:"dayOfMonth"` // วันที่ในเดือน (1-31)
 	Month      []int  `json:"month" bson:"month"`           // เดือน (1-12)
 	DayOfWeek  []int  `json:"dayOfWeek" bson:"dayOfWeek"`   // วันในสัปดาห์ (0-6)
+	ImageURL   string `json:"imageUrl"` // << เพิ่มตรงนี้
 }

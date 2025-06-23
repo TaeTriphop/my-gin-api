@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
 
 	"my-gin-api/models"
+
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -35,12 +35,21 @@ func isTimeToNotify(reminder models.Reminders, now time.Time) bool {
 	return reminder.Hour == now.Hour() && reminder.Minute == now.Minute()
 }
 
-func sendToDiscord(webhookURL, title, message string) {
-	payload := map[string]string{
-		"content": fmt.Sprintf("**%s**\n%s", title, message),
+func sendToDiscord(webhookURL, title, message, imageURL string) {
+	payload := map[string]interface{}{
+		"embeds": []map[string]interface{}{
+			{
+				"title":       title,
+				"description": message,
+				"color":       16626879, // สีชมพู
+				"thumbnail": map[string]string{
+					"url": imageURL,
+				},
+			},
+		},
 	}
-	jsonBody, _ := json.Marshal(payload)
 
+	jsonBody, _ := json.Marshal(payload)
 	_, err := http.Post(webhookURL, "application/json", bytes.NewBuffer(jsonBody))
 	if err != nil {
 		log.Println("❌ Failed to send to Discord:", err)
@@ -65,7 +74,7 @@ func StartReminderScheduler(db *mongo.Database, webhookURL string) {
 
 			for _, reminder := range reminders {
 				if isTimeToNotify(reminder, now) {
-					sendToDiscord(webhookURL, reminder.Title, reminder.Message)
+					sendToDiscord(webhookURL, reminder.Title, reminder.Message, reminder.ImageURL)
 				}
 			}
 
