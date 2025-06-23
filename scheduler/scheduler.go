@@ -23,6 +23,9 @@ func contains(list []int, value int) bool {
 }
 
 func isTimeToNotify(reminder models.Reminders, now time.Time) bool {
+	log.Printf("⏰ Checking reminder: %s at %02d:%02d | Now: %02d:%02d\n",
+		reminder.Title, reminder.Hour, reminder.Minute, now.Hour(), now.Minute())
+
 	if len(reminder.Month) > 0 && !contains(reminder.Month, int(now.Month())) {
 		return false
 	}
@@ -32,7 +35,12 @@ func isTimeToNotify(reminder models.Reminders, now time.Time) bool {
 	if len(reminder.DayOfWeek) > 0 && !contains(reminder.DayOfWeek, int(now.Weekday())) {
 		return false
 	}
-	return reminder.Hour == now.Hour() && reminder.Minute == now.Minute()
+
+	match := reminder.Hour == now.Hour() && reminder.Minute == now.Minute()
+	if match {
+		log.Println("✅ Time matched! Sending notification")
+	}
+	return match
 }
 
 func sendToDiscord(webhookURL, title, message, imageURL string) {
@@ -41,7 +49,7 @@ func sendToDiscord(webhookURL, title, message, imageURL string) {
 			{
 				"title":       title,
 				"description": message,
-				"color":       16626879, // สีชมพู
+				"color":       16626879,
 				"thumbnail": map[string]string{
 					"url": imageURL,
 				},
@@ -50,10 +58,14 @@ func sendToDiscord(webhookURL, title, message, imageURL string) {
 	}
 
 	jsonBody, _ := json.Marshal(payload)
-	_, err := http.Post(webhookURL, "application/json", bytes.NewBuffer(jsonBody))
+	resp, err := http.Post(webhookURL, "application/json", bytes.NewBuffer(jsonBody))
 	if err != nil {
 		log.Println("❌ Failed to send to Discord:", err)
+		return
 	}
+	defer resp.Body.Close()
+
+	log.Printf("📤 Sent reminder '%s' to Discord with status %s\n", title, resp.Status)
 }
 
 func StartReminderScheduler(db *mongo.Database, webhookURL string) {
